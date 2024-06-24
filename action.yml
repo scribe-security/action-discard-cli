@@ -14,11 +14,15 @@ inputs:
     deprecationMessage: Please use scribe-auth-audience instead
     required: false
   current:
-    description: discard evidence attached to the current context
+    description: Discard evidence attached to the current context
   interactive:
-    description: force interactive mode for the discard list
+    description: Force interactive mode for the discard list
+  ref:
+    description: Evidence store refrence
   silent:
-    description: automatically accept the discard list
+    description: Automatically accept the discard list
+  store:
+    description: Select evidence store
   allow-expired:
     description: Allow expired certs
   attest-config:
@@ -95,15 +99,15 @@ inputs:
   rule-args:
     description: Policy arguments
   scribe-auth-audience:
-    description: Scribe auth audience
+    description: Scribe auth audience (deprecated)
   scribe-client-id:
-    description: Scribe Client ID
+    description: Scribe Client ID (deprecated)
   scribe-client-secret:
-    description: Scribe Client Secret
+    description: Scribe Client Token
   scribe-enable:
     description: Enable scribe client
   scribe-login-url:
-    description: Scribe login url
+    description: Scribe login url (deprecated)
   scribe-url:
     description: Scribe API Url
   structured:
@@ -118,7 +122,7 @@ runs:
     - shell: bash
       name: Install valint
       run: |2-
-        if [ ! -e "$HOME/.scribe/bin/valint" ]; then
+        if [ ! -e "$HOME/.scribe/bin/valint" ] || [ -z "$LAZY_INSTALL" ]; then
         	curl -sSfL https://get.scribesecurity.com/install.sh  | sh -s -- -t valint -D
         fi
     - shell: bash
@@ -131,7 +135,9 @@ runs:
         ${{ inputs.scribe-audience && '--scribe.auth.audience=' }}${{ inputs.scribe-audience }} \
         ${{ inputs.current && '--current=' }}${{ inputs.current }} \
         ${{ inputs.interactive && '--interactive=' }}${{ inputs.interactive }} \
+        ${{ inputs.ref && '--ref=' }}${{ inputs.ref }} \
         ${{ inputs.silent && '--silent=' }}${{ inputs.silent }} \
+        ${{ inputs.store && '--store=' }}${{ inputs.store }} \
         ${{ inputs.allow-expired && '--allow-expired=' }}${{ inputs.allow-expired }} \
         ${{ inputs.attest-config && '--attest.config=' }}${{ inputs.attest-config }} \
         ${{ inputs.attest-default && '--attest.default=' }}${{ inputs.attest-default }} \
